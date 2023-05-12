@@ -11,11 +11,12 @@ public class jpaMain {
                 Persistence.createEntityManagerFactory("hello");
 
         EntityManager em = emf.createEntityManager();
+
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         Member findMember = em.find(Member.class, 1L);
-        System.out.println(findMember.getName());
+        findMember.setName("HelloJpa");
 
         tx.commit();
 
