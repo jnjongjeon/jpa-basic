@@ -15,8 +15,10 @@ public class jpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        Member findMember = em.find(Member.class, 1L);
-        findMember.setName("HelloJpa");
+        Member member = new Member(202L, "member200");
+        em.persist(member);
+
+        System.out.println("====================");
 
         tx.commit();
 
