@@ -17,17 +17,32 @@ public class jpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        Member member = new Member();
-        member.setCreateBy("Kim");
-        member.setUsername("전인종");
-        member.setCreatedDate(LocalDateTime.now());
+        try {
+            Member member = new Member();
+            member.setUsername("전인종");
+            em.persist(member);
 
-        em.persist(member);
+            em.flush();
+            em.clear();
 
-        tx.commit();
+            Member findMember = em.find(Member.class, member.getId());
+            System.out.println("findMember = " + findMember.getUsername());
+            tx.commit();
 
-        em.close();
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
         emf.close();
 
+    }
+
+    private static void printMemberAndTeam(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+
+        Team team = member.getTeam();
+        System.out.println("team = " + team.getName());
     }
 }
