@@ -10,7 +10,7 @@ import java.util.List;
 public class jpaMain {
     public static void main(String[] args) {
         EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory("hello");
+                Persistence.createEntityManagerFactory("aa");
 
         EntityManager em = emf.createEntityManager();
 
@@ -18,17 +18,21 @@ public class jpaMain {
         tx.begin();
 
         try {
-            Member member = new Member();
-            member.setUsername("전인종");
-            em.persist(member);
+            Child child1 = new Child();
+            Child child2 = new Child();
+
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            em.persist(parent);
 
             em.flush();
             em.clear();
 
-            Member findMember = em.find(Member.class, member.getId());
-            System.out.println("findMember = " + findMember.getUsername());
+            Child child = em.find(Child.class, child1.getId());
+            em.remove(child);
             tx.commit();
-
         } catch (Exception e) {
             tx.rollback();
         } finally {
@@ -36,13 +40,5 @@ public class jpaMain {
         }
         emf.close();
 
-    }
-
-    private static void printMemberAndTeam(Member member) {
-        String username = member.getUsername();
-        System.out.println("username = " + username);
-
-        Team team = member.getTeam();
-        System.out.println("team = " + team.getName());
     }
 }
