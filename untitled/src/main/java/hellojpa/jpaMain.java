@@ -18,20 +18,32 @@ public class jpaMain {
         tx.begin();
 
         try {
+            Member member = new Member();
+            member.setUsername("Member1");
+            member.setHomeAddress(new Address("HomeCity", "street", "10000"));
 
-            Address address = new Address("city", "street", "1000");
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.setHomeAddress(address);
-            em.persist(member1);
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("치킨2");
+            member.getFavoriteFoods().add("치킨3");
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setHomeAddress(address);
-            em.persist(member2);
+            member.getAddressHistory().add(new AddressEntity("old1", "street", "10000"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street", "10000"));
 
-            member1.getHomeAddress().setCity("newCity");
+            em.persist(member);
 
+            em.flush();
+            em.clear();
+
+            System.out.println("start=========================");
+            Member findMember = em.find(Member.class, member.getId());
+
+            //homeCity -> newCity
+            //findMember.getHomeAddress().setCity("newCity"); 이러면 안됨
+            findMember.setHomeAddress(new Address("newCity", findMember.getHomeAddress().getStreet(), findMember.getHomeAddress().getZipcode()));
+
+            //치킨 -> 분식
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("한식");
 
             tx.commit();
         } catch (Exception e) {
